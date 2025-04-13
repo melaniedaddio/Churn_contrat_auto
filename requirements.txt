@@ -1,0 +1,11 @@
+numpy
+pandas
+pyarrow
+scipy
+seaborn
+ipykernel
+jupyter
+scikit-learn
+scikit-optimize
+plotly
+lightgbm
