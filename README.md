@@ -1,4 +1,8 @@
-# Credit Scoring
+# Churn Contrats Auto
+
+```
+PROJET EN COURS
+```
 
 ## 📌 Description du projet
 Ce projet vise à développer un modèle de scoring ciblant les clients qui vont résilier leur contrat auto. 
@@ -89,7 +93,3 @@ Le jeu de données utilisé provient des données clients d'un assureur auto. Ce
 - 📊 Évaluer les performances des modèles avec des métriques adaptées (AUC, précision, rappel, etc.)
 - 📈 Interpréter les résultats pour une prise de décision optimisée
 
-## 🛠️ Technologies utilisées
-- **🐍 Python** (pandas, numpy, scikit-learn, matplotlib, seaborn)
-- **📒 Jupyter Notebook** pour l'exploration et la visualisation des données
-- **🔀 Git** pour le versionning du code
