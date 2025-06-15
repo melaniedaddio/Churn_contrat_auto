@@ -9,3 +9,4 @@ scikit-learn
 scikit-optimize
 plotly
 lightgbm
+skimpy

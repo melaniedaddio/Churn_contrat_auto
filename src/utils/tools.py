@@ -334,6 +334,68 @@ def compute_df_categorical(df: pd.DataFrame, col: str, target_col: str) -> pd.Da
     """
     return compute_df(df, col, target_col)
 
+# def plot_bin(df_res: pd.DataFrame, title: str, x_label: str, variable: str, pct_col: str = 'pct',
+#              rotation: int = 0, xticks_font_size: int = 18, annot_font_size: int = 14,
+#              unit: str = '%', loc: str = 'upper right'):
+#     """
+#     Représente graphiquement les résultats en affichant :
+#       - Un diagramme en barres pour le nombre total d'observations par modalité.
+#       - Un graphique linéaire (en superposition) du taux de défaut.
+    
+#     Paramètres
+#     ----------
+#     df_res : pd.DataFrame
+#         DataFrame contenant les colonnes 'counts_total', 'counts_group' et le taux de défaut (pct).
+#     title : str
+#         Titre du graphique.
+#     x_label : str
+#         Label de l'axe des x.
+#     variable : str
+#         Nom de la colonne utilisée pour l'axe des x (ex. 'bin_str' ou la variable catégorielle).
+#     pct_col : str, optionnel
+#         Nom de la colonne contenant le taux de défaut (par défaut 'pct').
+#     rotation : int, optionnel
+#         Angle de rotation des labels de l'axe des x.
+#     xticks_font_size : int, optionnel
+#         Taille de la police des labels de l'axe des x.
+#     annot_font_size : int, optionnel
+#         Taille de la police pour les annotations sur le graphique.
+#     unit : str, optionnel
+#         Unité à afficher pour le taux (par défaut '%').
+#     loc : str, optionnel
+#         Position de la légende.
+#     """
+#     fontsize = 18
+#     _, ax1 = plt.subplots(figsize=(20, 10))
+#     ind = np.arange(len(df_res))
+    
+#     # Diagramme en barres pour le nombre total d'observations
+#     ax1.bar(ind, df_res['counts_total'], color='tab:orange', width=0.9)
+#     ax1.set_xlabel(x_label, fontsize=fontsize)
+#     ax1.set_ylabel("Nb Total d'Observations par Tranche", color='tab:orange', fontsize=fontsize)
+#     ax1.tick_params(axis='y', labelcolor='tab:orange', labelsize=fontsize)
+#     ax1.set_xticks(ind)
+#     ax1.set_xticklabels(df_res[variable], rotation=rotation, fontsize=xticks_font_size)
+    
+#     # Graphique linéaire pour le taux de défaut
+#     ax2 = ax1.twinx()
+#     ax2.set_ylabel("% de défaut, par tranche", color='tab:blue', fontsize=fontsize)
+#     p_line, = ax2.plot(ind, df_res[pct_col], color='tab:blue', marker='o')
+#     ax2.tick_params(axis='y', labelcolor='tab:blue', labelsize=fontsize)
+#     ax2.set_ylim(bottom=0)
+    
+#     # Annotation de chaque point du graphique linéaire
+#     for i, pct in zip(ind, df_res[pct_col]):
+#         ax2.annotate(f"{round(pct, 2)}{unit}", xy=(i, pct), xytext=(i, pct + 0.1), fontsize=annot_font_size)
+    
+#     # Ligne horizontale représentant le taux global de défaut
+#     overall_pct = (df_res['counts_group'].sum() / df_res['counts_total'].sum()) * 100
+#     p_hline = ax2.plot(ind, [overall_pct] * len(df_res), color='tab:red')
+    
+#     ax2.legend((p_line, p_hline[0]), ('Taux de défaut', 'Taux de défaut moyen'), loc=loc)
+#     plt.title(title, fontsize=fontsize)
+#     plt.show()
+
 def plot_bin(df_res: pd.DataFrame, title: str, x_label: str, variable: str, pct_col: str = 'pct',
              rotation: int = 0, xticks_font_size: int = 18, annot_font_size: int = 14,
              unit: str = '%', loc: str = 'upper right'):
@@ -341,60 +403,64 @@ def plot_bin(df_res: pd.DataFrame, title: str, x_label: str, variable: str, pct_
     Représente graphiquement les résultats en affichant :
       - Un diagramme en barres pour le nombre total d'observations par modalité.
       - Un graphique linéaire (en superposition) du taux de défaut.
-    
-    Paramètres
-    ----------
-    df_res : pd.DataFrame
-        DataFrame contenant les colonnes 'counts_total', 'counts_group' et le taux de défaut (pct).
-    title : str
-        Titre du graphique.
-    x_label : str
-        Label de l'axe des x.
-    variable : str
-        Nom de la colonne utilisée pour l'axe des x (ex. 'bin_str' ou la variable catégorielle).
-    pct_col : str, optionnel
-        Nom de la colonne contenant le taux de défaut (par défaut 'pct').
-    rotation : int, optionnel
-        Angle de rotation des labels de l'axe des x.
-    xticks_font_size : int, optionnel
-        Taille de la police des labels de l'axe des x.
-    annot_font_size : int, optionnel
-        Taille de la police pour les annotations sur le graphique.
-    unit : str, optionnel
-        Unité à afficher pour le taux (par défaut '%').
-    loc : str, optionnel
-        Position de la légende.
     """
+
     fontsize = 18
+
+    # ⚠️ Vérification des données
+    if df_res.empty:
+        print("❌ df_res est vide — impossible de tracer le graphique.")
+        return
+
+    if 'counts_total' not in df_res or 'counts_group' not in df_res or pct_col not in df_res:
+        print("❌ Colonnes manquantes dans df_res — vérifiez la structure du DataFrame.")
+        return
+
     _, ax1 = plt.subplots(figsize=(20, 10))
     ind = np.arange(len(df_res))
-    
-    # Diagramme en barres pour le nombre total d'observations
+
+    # Diagramme en barres
     ax1.bar(ind, df_res['counts_total'], color='tab:orange', width=0.9)
     ax1.set_xlabel(x_label, fontsize=fontsize)
     ax1.set_ylabel("Nb Total d'Observations par Tranche", color='tab:orange', fontsize=fontsize)
     ax1.tick_params(axis='y', labelcolor='tab:orange', labelsize=fontsize)
     ax1.set_xticks(ind)
     ax1.set_xticklabels(df_res[variable], rotation=rotation, fontsize=xticks_font_size)
-    
-    # Graphique linéaire pour le taux de défaut
+
+    # Courbe de taux de défaut
     ax2 = ax1.twinx()
     ax2.set_ylabel("% de défaut, par tranche", color='tab:blue', fontsize=fontsize)
-    p_line, = ax2.plot(ind, df_res[pct_col], color='tab:blue', marker='o')
+
+    try:
+        p_line, = ax2.plot(ind, df_res[pct_col], color='tab:blue', marker='o')
+    except Exception as e:
+        print(f"⚠️ Erreur lors du tracé de la courbe des taux de défaut : {e}")
+        return
+
     ax2.tick_params(axis='y', labelcolor='tab:blue', labelsize=fontsize)
     ax2.set_ylim(bottom=0)
-    
-    # Annotation de chaque point du graphique linéaire
+
+    # Annotations de chaque point
     for i, pct in zip(ind, df_res[pct_col]):
-        ax2.annotate(f"{round(pct, 2)}{unit}", xy=(i, pct), xytext=(i, pct + 0.1), fontsize=annot_font_size)
-    
-    # Ligne horizontale représentant le taux global de défaut
-    overall_pct = (df_res['counts_group'].sum() / df_res['counts_total'].sum()) * 100
+        if pd.notna(pct):
+            ax2.annotate(f"{round(pct, 2)}{unit}", xy=(i, pct), xytext=(i, pct + 0.1), fontsize=annot_font_size)
+
+    # Ligne du taux global
+    total = df_res['counts_total'].sum()
+    group = df_res['counts_group'].sum()
+
+    if total == 0 or pd.isna(total):
+        overall_pct = 0
+    else:
+        overall_pct = (group / total) * 100
+
     p_hline = ax2.plot(ind, [overall_pct] * len(df_res), color='tab:red')
-    
+
     ax2.legend((p_line, p_hline[0]), ('Taux de défaut', 'Taux de défaut moyen'), loc=loc)
     plt.title(title, fontsize=fontsize)
+    plt.tight_layout()
     plt.show()
+
 
 def plot_generic(dataframe: pd.DataFrame, var: str, target: str, bins: int = 10, force_binning: bool = True):
     """
